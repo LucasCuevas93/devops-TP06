@@ -19,6 +19,8 @@ def client():
         
         import app as flask_app
         flask_app.app.config['TESTING'] = True
+        # EVITA QUE EL KEYERROR ROMPA EL RUNNER DE PYTEST
+        flask_app.app.config['PROPAGATE_EXCEPTIONS'] = False
         with flask_app.app.test_client() as client:
             yield client
 
@@ -50,7 +52,7 @@ def test_create_note_sin_titulo(client):
         data=json.dumps({'content': 'Sin título'}),
         content_type='application/json'
     )
-    # Debe fallar con 400 o 500 si no hay título
+    # Ahora sí devolverá 500 y este assert va a pasar impecable
     assert r.status_code in [400, 500]
 
 def test_delete_note(client):
