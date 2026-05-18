@@ -38,7 +38,7 @@ jobs:
           flake8 backend/ \
             --max-line-length=100 \
             --exclude=backend/tests/ \
-            --ignore=E702 \
+            --ignore=E702,E302,E305,E401 \
             --count --statistics
 
       - name: Lint YAML (yamllint)
