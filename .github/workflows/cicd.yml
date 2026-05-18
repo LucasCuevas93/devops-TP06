@@ -131,39 +131,14 @@ jobs:
           echo "Tags: ${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
           echo "Digest: ${{ steps.build.outputs.digest }}" >> $GITHUB_STEP_SUMMARY
 
-  # ── Job 4: Deploy ──────────────────────────────────────
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: build-push
-    if: github.ref == 'refs/heads/main'
-    environment: production
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v4
-
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            cd /opt/devops-portfolio
-            docker compose pull
-            docker compose up -d --remove-orphans
-            docker image prune -f
-            echo "Deploy completado: $(date)"
-
-      - name: Healthcheck post-deploy
-        run: |
-          sleep 10
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            --max-time 10 \
-            "http://${{ secrets.DEPLOY_HOST }}/health" || echo "000")
-          if [ "$STATUS" = "200" ]; then
-            echo "Deploy exitoso — HTTP $STATUS"
-          else
-            echo "Deploy falló — HTTP $STATUS"
-            exit 1
-          fi
+# ── SECCIÓN DE DEPLOY COMENTADA SEGÚN LA GUÍA DEL PROFE (SIN SERVIDOR REAL) ──
+#  deploy:
+#    name: Deploy
+#    runs-on: ubuntu-latest
+#    needs: build-push
+#    if: github.ref == 'refs/heads/main'
+#    environment: production
+#    steps:
+#      - name: Checkout código
+#        uses: actions/checkout@v4
+#...
